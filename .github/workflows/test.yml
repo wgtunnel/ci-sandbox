@@ -1,0 +1,34 @@
+name: test
+permissions:
+  contents: write
+  packages: write
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+
+  publish-fdroid-public:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch update for fdroid repo
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          repository: wgtunnel/fdroid
+          event-type: fdroid-update
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: 'Test'
+          tag_name: test123
+          name: test123
+          draft: false
+          prerelease: true
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
